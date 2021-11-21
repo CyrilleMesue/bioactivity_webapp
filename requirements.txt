@@ -4,3 +4,4 @@ numpy==1.19.1
 scikit-learn==1.0.1
 pillow==8.4.0
 base58==1.1 
+subprocess
