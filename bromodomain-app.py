@@ -37,9 +37,9 @@ def build_model(input_data):
     st.markdown(filedownload(df), unsafe_allow_html=True)
 
 # Logo image
-image = Image.open('logo.png')
+#image = Image.open('logo.png')
 
-st.image(image, use_column_width=True)
+#st.image(image, use_column_width=True)
 
 # Page title
 st.markdown("""
