@@ -6,6 +6,7 @@ import os
 import base64
 import pickle
 
+st.write("Hello")
 # Molecular descriptor calculator
 def desc_calc():
     # Performs the descriptor calculation
