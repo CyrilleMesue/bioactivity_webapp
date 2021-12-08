@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 from PIL import Image
-import subprocess
 import os
 import base64
 import pickle
@@ -9,15 +8,12 @@ import pickle
 import warnings
 # stdlib. imports
 from collections import OrderedDict
-from csv import DictReader
-from datetime import datetime
-from os import remove
-from re import compile, IGNORECASE
 from time import sleep;
-import pandas as pd
 from padelpy import padeldescriptor
 from padelpy import from_smiles
 from sklearn.feature_selection import VarianceThreshold
+import jdk
+jdk.install('11', jre=True)
 
 # Molecular descriptor calculator
 def desc_calc(smiles):
