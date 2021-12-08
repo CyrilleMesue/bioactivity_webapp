@@ -6,14 +6,32 @@ import os
 import base64
 import pickle
 
-st.write("Hello")
+import warnings
+# stdlib. imports
+from collections import OrderedDict
+from csv import DictReader
+from datetime import datetime
+from os import remove
+from re import compile, IGNORECASE
+from time import sleep;
+import pandas as pd
+from padelpy import padeldescriptor
+from padelpy import from_smiles
+from sklearn.feature_selection import VarianceThreshold
+
 # Molecular descriptor calculator
-def desc_calc():
+def desc_calc(smiles):
     # Performs the descriptor calculation
-    bashCommand = "java -Xms2G -Xmx2G -Djava.awt.headless=true -jar ./PaDEL-Descriptor/PaDEL-Descriptor.jar -removesalt -standardizenitro -fingerprints -descriptortypes ./PaDEL-Descriptor/PubchemFingerprinter.xml -dir ./ -file descriptors_output.csv"
-    process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-    output, error = process.communicate()
-    os.remove('molecule.smi')
+    output = from_smiles(smiles, output_csv = None, descriptors= False,fingerprints = True, timeout = 60)
+    if type(output) == OrderedDict:
+        columns = [key for key in list(output.keys())]
+        values = [ int(value) for value in list(output.values())]
+        df = pd.DataFrame(val, columns = columns)
+        df
+    else:
+        df = pd.DataFrame(output).apply(lambda x: pd.Series(x))
+    
+    return df
 
 # File download
 def filedownload(df):
@@ -28,7 +46,11 @@ def build_model(input_data):
     load_model = pickle.load(open('Bromodomain_protein_target_bioactivity_model.pkl', 'rb'))
     # Apply model to make predictions
     st.write(input_data)
-    prediction = load_model.predict(input_data)
+    st.write("OK")
+    clean_input_data = input_data.drop("Name", axis = 1)
+    #clean_input_data = remove_low_variance(clean_input_data, threshold=0.1)
+   
+    prediction = load_model.predict(clean_input_data)
     
     st.header('**Prediction output**')
     prediction_output = pd.Series(prediction, name='pIC50')
@@ -37,10 +59,14 @@ def build_model(input_data):
     st.write(df)
     st.markdown(filedownload(df), unsafe_allow_html=True)
 
+def remove_low_variance(input_data, threshold=0.1):
+    selection = VarianceThreshold(threshold)
+    selection.fit(input_data)
+    return input_data[input_data.columns[selection.get_support(indices=True)]]
 # Logo image
-#image = Image.open('logo.png')
+image = Image.open('logo.png')
 
-#st.image(image, use_column_width=True)
+st.image(image, use_column_width=True)
 
 # Page title
 st.markdown("""
@@ -63,27 +89,30 @@ with st.sidebar.header('1. Upload your CSV data'):
 
 if st.sidebar.button('Predict'):
     load_data = pd.read_table(uploaded_file, sep=' ', header=None)
-    load_data.to_csv('molecule.smi', sep = '\t', header = False, index = False)
+    smiles = list(load_data[0])
+    CHEMBEL_ids = list(load_data[1])
+    names = pd.DataFrame(CHEMBEL_ids, columns = ['Name'])
 
     st.header('**Original input data**')
     st.write(load_data)
 
     with st.spinner("Calculating descriptors..."):
-        desc_calc()
+        descriptors = desc_calc(smiles)
+        
+    descriptors = pd.concat([names,descriptors], axis=1)
 
     # Read in calculated descriptors and display the dataframe
     st.header('**Calculated molecular descriptors**')
-    desc = pd.read_csv('descriptors_output.csv')
-    st.write(desc)
-    st.write(desc.shape)
+    st.write(descriptors)
+    st.write(descriptors.shape)
 
     # Read descriptor list used in previously built model
     st.header('**Subset of descriptors from previously built models**')
-    Xlist = list(pd.read_csv('descriptor_list.csv').columns)
-    desc_subset = desc[Xlist]
+    Xlist = list(descriptors.columns)
+    desc_subset = descriptors[Xlist]
     st.write(desc_subset)
     st.write(desc_subset.shape)
-
+    
     # Apply trained model to make prediction on query compounds
     build_model(desc_subset)
 else:
