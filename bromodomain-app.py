@@ -13,7 +13,7 @@ from padelpy import padeldescriptor
 from padelpy import from_smiles
 from sklearn.feature_selection import VarianceThreshold
 import jdk
-jdk.install('11', jre=True)
+jdk.install('11', jre=False)
 
 # Molecular descriptor calculator
 def desc_calc(smiles):
