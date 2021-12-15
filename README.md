@@ -30,7 +30,7 @@ conda activate bromodomain
 Download requirements.txt file
 
 ```
-wget https://raw.githubusercontent.com/dataprofessor/moldesc-app/main/requirements.txt
+wget https://raw.githubusercontent.com/CyrilleMesue/bioactivity_webapp/master/requirements.txt
 
 ```
 
