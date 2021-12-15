@@ -1,8 +1,7 @@
-# Predcting thr Bioactivity of Possible Compounds to Target Bromodomain Protein - Web App Deployed on Heroku
+# Predcting thr Bioactivity of Possible Compounds to Target Bromodomain Protein - Web App
 
 
-
-This web app predicts 
+This web app predicts the Bioactivity of compounds that could possibly target bromodomain protein for curing testis cancer.  
 
 The web app was built in Python using the following libraries:
 * streamlit
@@ -10,6 +9,7 @@ The web app was built in Python using the following libraries:
 * numpy
 * scikit-learn
 * pickle
+* padelpy
 
 [https://bromodomain-bioactivity.herokuapp.com/](https://bromodomain-bioactivity.herokuapp.com/)
 
