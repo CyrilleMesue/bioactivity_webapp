@@ -17,13 +17,13 @@ The web app was built in Python using the following libraries:
 To recreate this web app on your own computer, do the following.
 
 ### Create conda environment
-Firstly, we will create a conda environment called *moldesc*
+Firstly, we will create a conda environment called *bromodomain*
 ```
-conda create -n moldesc python=3.7.9
+conda create -n bromodomain python=3.7.9
 ```
-Secondly, we will login to the *moldesc* environement
+Secondly, we will login to the *bromodomain* environement
 ```
-conda activate moldesc
+conda activate bromodomain
 ```
 ### Install prerequisite libraries
 
