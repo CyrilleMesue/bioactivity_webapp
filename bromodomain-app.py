@@ -18,12 +18,13 @@ jdk.install('11', jre=True)
 # Molecular descriptor calculator
 def desc_calc(smiles):
     # Performs the descriptor calculation
+    # df is a dataframe containing the calculated molecular descriptors from the given smiles
     output = from_smiles(smiles, output_csv = None, descriptors= False,fingerprints = True, timeout = 60)
     if type(output) == OrderedDict:
         columns = [key for key in list(output.keys())]
         values = [ int(value) for value in list(output.values())]
         df = pd.DataFrame(val, columns = columns)
-        df
+        
     else:
         df = pd.DataFrame(output).apply(lambda x: pd.Series(x))
     
@@ -43,6 +44,7 @@ def build_model(input_data):
     # Apply model to make predictions
     st.write(input_data)
     st.write("OK")
+    # removing the IDs column
     clean_input_data = input_data.drop("Name", axis = 1)
     #clean_input_data = remove_low_variance(clean_input_data, threshold=0.1)
    
@@ -66,13 +68,13 @@ st.image(image, use_column_width=True)
 
 # Page title
 st.markdown("""
-# Bioactivity Prediction App (Acetylcholinesterase)
+# Bioactivity Prediction App (Bromodomain Protein Target)
 
-This app allows you to predict the bioactivity towards inhibting the `Acetylcholinesterase` enzyme. `Acetylcholinesterase` is a drug target for Alzheimer's disease.
+This app allows you to predict the bioactivity towards inhibting the `Bromodomain target` protein. `Bromodomain` is a drug target for testicular cancer.
 
 **Credits**
-- App built in `Python` + `Streamlit` by [Chanin Nantasenamat](https://medium.com/@chanin.nantasenamat) (aka [Data Professor](http://youtube.com/dataprofessor))
-- Descriptor calculated using [PaDEL-Descriptor](http://www.yapcwsoft.com/dd/padeldescriptor/) [[Read the Paper]](https://doi.org/10.1002/jcc.21707).
+- App built in `Python` + `Streamlit` by [Cyrille M. NJUME](https://cyrillemesue.github.io/)
+- Descriptor calculated using PubChem [PaDEL-Descriptor](http://www.yapcwsoft.com/dd/padeldescriptor/) [[Read the Paper]](https://doi.org/10.1002/jcc.21707).
 ---
 """)
 
@@ -80,7 +82,7 @@ This app allows you to predict the bioactivity towards inhibting the `Acetylchol
 with st.sidebar.header('1. Upload your CSV data'):
     uploaded_file = st.sidebar.file_uploader("Upload your input file", type=['txt'])
     st.sidebar.markdown("""
-[Example input file](https://raw.githubusercontent.com/dataprofessor/bioactivity-prediction-app/main/example_acetylcholinesterase.txt)
+[Example input file](https://raw.githubusercontent.com/CyrilleMesue/bioactivity_webapp/master/bromodomain_example.txt)
 """)
 
 if st.sidebar.button('Predict'):
